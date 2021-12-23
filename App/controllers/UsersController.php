@@ -23,26 +23,4 @@ class UsersController
         $users = $this->qb->getAll('user_data');
         Template::template('users', ['users' => $users]);
     }
-
-
-
-    public function createUser()
-    {
-        $createUser = $this->qb;
-        //Создать в таблице 'users'
-        $id = $createUser->insert('users',
-            [
-                'username' => $_POST['username'],
-                'email' => $_POST['email'],
-                'password' => $_POST['password']
-            ]);
-
-        //Возвращаем id и вставляем данные в таблицу 'users_data'
-        $createUser->insert('user_data',
-            [
-                'user_id' => $id,
-                'username' => $_POST['username'],
-                'email' => $_POST['email']
-            ]);
-    }
 }

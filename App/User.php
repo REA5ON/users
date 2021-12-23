@@ -71,4 +71,24 @@ class User
             Redirect::to('login');
         }
     }
+
+    public function createUser() {
+        try {
+            $userId = $this->auth->admin()->createUser($_POST['email'], $_POST['password'], $_POST['username']);
+
+            return $userId;
+        }
+        catch (\Delight\Auth\InvalidEmailException $e) {
+            flash()->error('Invalid email address');
+            Redirect::to('create_user');
+        }
+        catch (\Delight\Auth\InvalidPasswordException $e) {
+            flash()->error('Invalid password');
+            Redirect::to('create_user');
+        }
+        catch (\Delight\Auth\UserAlreadyExistsException $e) {
+            flash()->error('User already exists');
+            Redirect::to('create_user');
+        }
+    }
 }
