@@ -7,7 +7,6 @@ use PDO;
 
 class QueryBuilder extends \PDO
 {
-
     private $pdo, $queryFactory;
 
     public function __construct()

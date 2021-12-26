@@ -3,6 +3,7 @@
 namespace App;
 
 use Delight\Auth\Auth;
+use Delight\Auth\Role;
 use PDO;
 
 class User
@@ -75,20 +76,29 @@ class User
     public function createUser() {
         try {
             $userId = $this->auth->admin()->createUser($_POST['email'], $_POST['password'], $_POST['username']);
-
+            flash()->success('New user has been added!');
             return $userId;
         }
         catch (\Delight\Auth\InvalidEmailException $e) {
             flash()->error('Invalid email address');
-            Redirect::to('create_user');
+            Redirect::to('create');
         }
         catch (\Delight\Auth\InvalidPasswordException $e) {
             flash()->error('Invalid password');
-            Redirect::to('create_user');
+            Redirect::to('create');
         }
         catch (\Delight\Auth\UserAlreadyExistsException $e) {
             flash()->error('User already exists');
-            Redirect::to('create_user');
+            Redirect::to('create');
+        }
+    }
+
+    public static function isAdmin()
+    {
+        $pdo = new PDO('mysql:host=localhost;dbname=app3', 'root', 'root');
+        $auth = new Auth($pdo);
+        if ($auth->hasRole(\Delight\Auth\Role::ADMIN)) {
+            return true;
         }
     }
 }

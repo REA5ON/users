@@ -11,6 +11,8 @@ use App\Template;
 class UsersController
 {
     protected $qb;
+    protected $pdo;
+    protected $auth;
 
     public function __construct()
     {
