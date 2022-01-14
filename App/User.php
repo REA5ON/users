@@ -26,7 +26,7 @@ class User
 //                echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email)';
 //                echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
 //                echo '  For SMS, consider using a third-party service and a compatible SDK';
-                flash()->success("Registration complete");
+                flash()->success("Registration complete!");
             });
 
             return $userId;
@@ -99,6 +99,15 @@ class User
         $auth = new Auth($pdo);
         if ($auth->hasRole(\Delight\Auth\Role::ADMIN)) {
             return true;
+        }
+    }
+
+    public function isAdminOrAuthor($vars)
+    {
+        $id = intval($vars['id']);
+        if (!User::isAdmin() && $this->auth->getUserId() !== $id) {
+            flash()->error('You can modify just your profile!');
+            Redirect::to('');
         }
     }
 }
