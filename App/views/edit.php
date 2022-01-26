@@ -1,4 +1,4 @@
-<?php $this->layout('layout', ['title' => 'Create user']) ?>
+<?php $this->layout('layout', ['title' => 'Edit']) ?>
 <body>
 <main id="js-page-content" role="main" class="page-content mt-3">
     <div class="subheader">

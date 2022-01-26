@@ -8,6 +8,9 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     //homepage
     $r->addRoute('GET', '/', ['App\controllers\UsersController', 'getAllUsers']);
 
+
+    $r->addRoute('GET', '/verify_email/[/{title}]', ['App\controllers\SecurityController', 'verify']);
+
     $r->addRoute('GET', '/login', ['App\controllers\LoginController', 'template']);
     $r->addRoute('POST', '/login', ['App\controllers\LoginController', 'login']);
 
@@ -24,6 +27,12 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
     $r->addRoute('GET', '/media/{id:\d+}', ['App\controllers\MediaController', 'template']);
     $r->addRoute('POST', '/media/{id:\d+}', ['App\controllers\MediaController', 'updateImage']);
+
+    $r->addRoute('GET', '/status/{id:\d+}', ['App\controllers\StatusController', 'template']);
+    $r->addRoute('POST', '/status/{id:\d+}', ['App\controllers\StatusController', 'setStatus']);
+
+    $r->addRoute('GET', '/security/{id:\d+}', ['App\controllers\SecurityController', 'template']);
+    $r->addRoute('POST', '/security/{id:\d+}', ['App\controllers\SecurityController', 'editCredential']);
 
 //    $r->addRoute('GET', '/user/{id:\d+}', ['App\controllers\UserController', 'getUser']);
 });

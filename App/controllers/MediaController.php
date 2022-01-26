@@ -29,7 +29,7 @@ class MediaController
     {
         $image = new Image();
         $image->updateImage($vars['id'], $_FILES['image']['tmp_name'], '/App/views/img/users_images/');
-        flash()->error('Avatar has been update!');
+        flash()->success('Avatar has been update!');
         Redirect::to('');
     }
 }

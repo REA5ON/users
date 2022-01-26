@@ -22,6 +22,10 @@ class ComposerStaticInit631e757bdfaa6ee8f39f95d9737632eb
         array (
             'voku\\' => 5,
         ),
+        'V' => 
+        array (
+            'Valitron\\' => 9,
+        ),
         'T' => 
         array (
             'Tamtamchik\\SimpleFlash\\' => 23,
@@ -79,6 +83,10 @@ class ComposerStaticInit631e757bdfaa6ee8f39f95d9737632eb
         'voku\\' => 
         array (
             0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
+        ),
+        'Valitron\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/vlucas/valitron/src/Valitron',
         ),
         'Tamtamchik\\SimpleFlash\\' => 
         array (

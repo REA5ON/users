@@ -110,4 +110,71 @@ class User
             Redirect::to('');
         }
     }
+
+    /** Changing the current user’s password */
+    public function changePassword()
+    {
+        try {
+            $this->auth->changePassword($_POST['password'], $_POST['newPassword']);
+
+            echo 'Password has been changed';
+        }
+        catch (\Delight\Auth\NotLoggedInException $e) {
+            die('Not logged in');
+        }
+        catch (\Delight\Auth\InvalidPasswordException $e) {
+            die('Invalid password(s)');
+        }
+        catch (\Delight\Auth\TooManyRequestsException $e) {
+            die('Too many requests');
+        }
+    }
+
+    /** Changing the current user’s email address */
+    public function changeEmail()
+    {
+        try {
+            if ($this->auth->reconfirmPassword($_POST['password'])) {
+                $this->auth->changeEmail($_POST['newEmail'], function ($selector, $token) {
+                    echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
+                    echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
+                    echo '  For SMS, consider using a third-party service and a compatible SDK';
+                });
+
+                echo 'The change will take effect as soon as the new email address has been confirmed';
+            }
+            else {
+                echo 'We can\'t say if the user is who they claim to be';
+            }
+        }
+        catch (\Delight\Auth\InvalidEmailException $e) {
+            die('Invalid email address');
+        }
+        catch (\Delight\Auth\UserAlreadyExistsException $e) {
+            die('Email address already exists');
+        }
+        catch (\Delight\Auth\EmailNotVerifiedException $e) {
+            die('Account not verified');
+        }
+        catch (\Delight\Auth\NotLoggedInException $e) {
+            die('Not logged in');
+        }
+        catch (\Delight\Auth\TooManyRequestsException $e) {
+            die('Too many requests');
+        }
+    }
+
+    /** Changing the current user’s password as Admin */
+    public function changePasswordAsAdmin($id, $newPassword)
+    {
+        try {
+            $this->auth->admin()->changePasswordForUserById($id, $newPassword);
+        }
+        catch (\Delight\Auth\UnknownIdException $e) {
+            die('Unknown ID');
+        }
+        catch (\Delight\Auth\InvalidPasswordException $e) {
+            die('Invalid password');
+        }
+    }
 }

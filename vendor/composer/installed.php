@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => NULL,
+        'reference' => 'c0ed3754c0d2fa3262714bb60f80d147c7c19178',
         'name' => '__root__',
         'dev' => true,
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => NULL,
+            'reference' => 'c0ed3754c0d2fa3262714bb60f80d147c7c19178',
             'dev_requirement' => false,
         ),
         'aura/sqlquery' => array(
@@ -254,6 +254,15 @@
             'install_path' => __DIR__ . '/../tamtamchik/simple-flash',
             'aliases' => array(),
             'reference' => '62fc3d59df2cc5bbd746af25f488b76585362c45',
+            'dev_requirement' => false,
+        ),
+        'vlucas/valitron' => array(
+            'pretty_version' => 'v1.4.10',
+            'version' => '1.4.10.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../vlucas/valitron',
+            'aliases' => array(),
+            'reference' => '5ebd5d7af82cc0a9d798e816a2ecad63f1b59ceb',
             'dev_requirement' => false,
         ),
         'voku/portable-ascii' => array(

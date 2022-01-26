@@ -8,7 +8,8 @@
     "illuminate/support": "^8.61",
     "tamtamchik/simple-flash": "^2.0",
     "claviska/simpleimage": "^3.6",
-    "eoghanobrien/php-simple-mail": "^1.7"
+    "eoghanobrien/php-simple-mail": "^1.7",
+    "vlucas/valitron": "^1.4"
   },
 
   "autoload": {
