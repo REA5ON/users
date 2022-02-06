@@ -5,6 +5,7 @@ namespace App;
 use Delight\Auth\Auth;
 use Delight\Auth\Role;
 use PDO;
+use SimpleMail;
 
 class User
 {
@@ -23,9 +24,11 @@ class User
     {
         try {
             $userId = $this->auth->register($_POST['email'], $_POST['password'], $_POST['username'], function ($selector, $token) {
-//                echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email)';
-//                echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-//                echo '  For SMS, consider using a third-party service and a compatible SDK';
+                $url = 'level3/verify_email/' . \urlencode($selector) . '&' . \urlencode($token);
+                $send = SimpleMail::make()
+                    ->setTo('test@gmail.com', 'Test')
+                    ->setMessage($url)
+                    ->send();
                 flash()->success("Registration complete!");
             });
 
@@ -135,32 +138,38 @@ class User
     {
         try {
             if ($this->auth->reconfirmPassword($_POST['password'])) {
-                $this->auth->changeEmail($_POST['newEmail'], function ($selector, $token) {
-                    echo 'Send ' . $selector . ' and ' . $token . ' to the user (e.g. via email to the *new* address)';
-                    echo '  For emails, consider using the mail(...) function, Symfony Mailer, Swiftmailer, PHPMailer, etc.';
-                    echo '  For SMS, consider using a third-party service and a compatible SDK';
+                $this->auth->changeEmail($_POST['email'], function ($selector, $token) {
+                    $url = 'level3/change_email/' . \urlencode($selector) . '&' . \urlencode($token);
+                    $send = SimpleMail::make()
+                        ->setTo('test@gmail.com', 'Test')
+                        ->setMessage($url)
+                        ->send();
+
+                    flash()->success('Mail was be send to new email address');
+                    return true;
                 });
 
-                echo 'The change will take effect as soon as the new email address has been confirmed';
+                flash()->success('The change will take effect as soon as the new email address has been confirmed');
+                Redirect::to('');
             }
             else {
-                echo 'We can\'t say if the user is who they claim to be';
+                flash()->error('We can\'t say if the user is who they claim to be');
             }
         }
         catch (\Delight\Auth\InvalidEmailException $e) {
-            die('Invalid email address');
+            flash()->error('Invalid email address');
         }
         catch (\Delight\Auth\UserAlreadyExistsException $e) {
-            die('Email address already exists');
+            flash()->error('Email address already exists');
         }
         catch (\Delight\Auth\EmailNotVerifiedException $e) {
-            die('Account not verified');
+            flash()->error('Account not verified');
         }
         catch (\Delight\Auth\NotLoggedInException $e) {
-            die('Not logged in');
+            flash()->error('Not logged in');
         }
         catch (\Delight\Auth\TooManyRequestsException $e) {
-            die('Too many requests');
+            flash()->error('Too many requests');
         }
     }
 
@@ -171,10 +180,31 @@ class User
             $this->auth->admin()->changePasswordForUserById($id, $newPassword);
         }
         catch (\Delight\Auth\UnknownIdException $e) {
-            die('Unknown ID');
+            flash()->error('Unknown ID');
         }
         catch (\Delight\Auth\InvalidPasswordException $e) {
-            die('Invalid password');
+            flash()->error('Invalid password');
+        }
+    }
+
+    public function emailVerification($selector, $token)
+    {
+        try {
+            $this->auth->confirmEmail($selector, $token);
+
+            flash()->success('Email address has been verified');
+        }
+        catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
+            flash()->error('Invalid token');
+        }
+        catch (\Delight\Auth\TokenExpiredException $e) {
+            flash()->error('Token expired');
+        }
+        catch (\Delight\Auth\UserAlreadyExistsException $e) {
+            flash()->error('Email address already exists');
+        }
+        catch (\Delight\Auth\TooManyRequestsException $e) {
+            flash()->error('Too many requests');
         }
     }
 }

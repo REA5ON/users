@@ -44,12 +44,9 @@
                             </a>
                             <a href="" class="fs-xl text-truncate text-truncate-lg text-info"
                                data-toggle="dropdown" aria-expanded="false">
-                                <?php if (\App\User::isAdmin()) : ?>
                                 <i class="fal fas fa-cog fa-fw d-inline-block ml-1 fs-md"></i>
                                 <i class="fal fa-angle-down d-inline-block ml-1 fs-md"></i>
-                                <?php endif; ?>
                             </a>
-                            <?php if (\App\User::isAdmin()) : ?>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" href="/edit/<?= $this->e($user['id']) ?>">
                                     <i class="fa fa-edit"></i>
@@ -69,7 +66,6 @@
                                     Удалить
                                 </a>
                             </div>
-                            <?php endif; ?>
                             <span class="text-truncate text-truncate-xl">Name</span>
                         </div>
                         <button class="js-expand-btn btn btn-sm btn-default d-none" data-toggle="collapse"

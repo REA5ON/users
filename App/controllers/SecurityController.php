@@ -3,6 +3,7 @@
 namespace App\controllers;
 
 use App\QueryBuilder;
+use App\Redirect;
 use App\Template;
 use App\User;
 use Delight\Auth\Auth;
@@ -10,11 +11,22 @@ use PDO;
 
 class SecurityController
 {
-    public function template($vars){
-        $isAdminOrAuthor = new User();
+    protected $user, $qb, $auth;
+
+    public function __construct()
+    {
+        $this->user = new User();
+        $this->qb = new QueryBuilder();
+        $pdo = new PDO('mysql:host=localhost;dbname=app3', 'root', 'root');
+        $this->auth = new Auth($pdo);
+    }
+
+    public function template($vars)
+    {
+        $isAdminOrAuthor = $this->user;
         $isAdminOrAuthor->isAdminOrAuthor($vars);
 
-        $user = new QueryBuilder();
+        $user = $this->qb;
         $user = $user->getOne('user_data', $vars['id']);
         Template::template('security',
             [
@@ -25,30 +37,35 @@ class SecurityController
 
     public function editCredential($vars)
     {
-        $pdo = new PDO('mysql:host=localhost;dbname=app3', 'root', 'root');
-        $auth = new Auth($pdo);
-        $user = new User();
-        $user->isAdminOrAuthor($vars['id']);
+        $id = intval($vars['id']);
 
-        //Если email совпадает с тем что в системе - меняем только пароль
-        if ($_POST['email'] === $auth->getEmail()) {
-            //если админ
-            if ($auth->admin()) {
-                $user->changePasswordAsAdmin($vars['id'], $_POST['newPassword']);
-            }
-
-            $user->changePassword();
-            exit;
+        //if changed email
+        if ($_POST['email'] !== $this->auth->getEmail()) {
+            $this->user->changeEmail();
         }
 
-        //меняем email
-        $user->changeEmail();
-
-
+        //change password
+        if ($this->auth->admin()) {
+            $this->user->changePasswordAsAdmin($id, $_POST['newPassword']);
+        } else {
+            $this->user->changePassword();
+        }
+        Redirect::to('');
     }
 
-    public function verify($vars)
+    public function emailVerification($vars)
     {
-        var_dump($vars);die;
+        $this->user->emailVerification($vars['selector'], $vars['token']);
+        Redirect::to('');
     }
+
+    public function changeEmail($vars)
+    {
+        $this->user->emailVerification($vars['selector'], $vars['token']);
+        $email = $this->auth->getEmail();
+        $id = $this->auth->getUserId();
+        $this->qb->update('user_data', ['email' => $email], $id);
+        Redirect::to('');
+    }
+
 }

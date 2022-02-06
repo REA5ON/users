@@ -8,9 +8,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     //homepage
     $r->addRoute('GET', '/', ['App\controllers\UsersController', 'getAllUsers']);
 
-
-    $r->addRoute('GET', '/verify_email/[/{title}]', ['App\controllers\SecurityController', 'verify']);
-
     $r->addRoute('GET', '/login', ['App\controllers\LoginController', 'template']);
     $r->addRoute('POST', '/login', ['App\controllers\LoginController', 'login']);
 
@@ -33,6 +30,12 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 
     $r->addRoute('GET', '/security/{id:\d+}', ['App\controllers\SecurityController', 'template']);
     $r->addRoute('POST', '/security/{id:\d+}', ['App\controllers\SecurityController', 'editCredential']);
+
+    $r->addRoute('GET', '/verify_email/[{selector}&{token}]', ['App\controllers\SecurityController', 'emailVerification']);
+    $r->addRoute('GET', '/change_email/[{selector}&{token}]', ['App\controllers\SecurityController', 'changeEmail']);
+
+
+
 
 //    $r->addRoute('GET', '/user/{id:\d+}', ['App\controllers\UserController', 'getUser']);
 });
