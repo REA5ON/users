@@ -4,7 +4,6 @@ namespace App\controllers;
 
 use App\QueryBuilder;
 use App\Redirect;
-use App\Template;
 use App\User;
 use League\Plates\Engine;
 
@@ -19,10 +18,12 @@ class StatusController
         $this->user = $user;
         $this->qb = $qb;
         $this->engine = $engine;
+
+        $this->user->isNotLoggedIn();
     }
 
     public function index($vars){
-        $this->user->isAdminOrAuthor($vars);
+//        $this->user->isAdminOrAuthor($vars);
 
         $user = $this->qb->getOne('user_data', $vars['id']);
         echo $this->engine->render('status', ['user' => $user]);

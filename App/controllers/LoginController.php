@@ -6,7 +6,6 @@ namespace App\controllers;
 if (!session_id()) @session_start();
 
 use App\Redirect;
-use App\Template;
 use App\User;
 use Delight\Auth\Auth;
 use League\Plates\Engine;

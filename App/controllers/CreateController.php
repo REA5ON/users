@@ -25,6 +25,8 @@ class CreateController
         $this->image = $image;
         $this->qb = $qb;
         $this->engine = $engine;
+
+        $this->user->isNotLoggedIn();
     }
 
 

@@ -4,7 +4,6 @@ namespace App\controllers;
 
 use App\QueryBuilder;
 use App\Redirect;
-use App\Template;
 use App\User;
 use Delight\Auth\Auth;
 use League\Plates\Engine;
@@ -22,11 +21,13 @@ class SecurityController
         $this->qb = $qb;
         $this->engine = $engine;
         $this->auth = $auth;
+
+        $this->user->isNotLoggedIn();
     }
 
     public function index($vars)
     {
-        $this->user->isAdminOrAuthor($vars);
+//        $this->user->isAdminOrAuthor($vars);
 
         $user = $this->qb->getOne('user_data', $vars['id']);
         echo $this->engine->render('security', ['user' => $user]);

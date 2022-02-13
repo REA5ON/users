@@ -5,21 +5,23 @@ namespace App\controllers;
 if( !session_id() ) @session_start();
 
 use App\QueryBuilder;
+use App\User;
 use League\Plates\Engine;
-use function Symfony\Component\Translation\t;
 
 
 class UsersController
 {
     protected $qb;
-    protected $pdo;
-    protected $auth;
     protected $engine;
+    protected $user;
 
-    public function __construct(QueryBuilder $qb, Engine $engine)
+    public function __construct(QueryBuilder $qb, Engine $engine, User $user)
     {
         $this->qb = $qb;
         $this->engine = $engine;
+        $this->user = $user;
+
+//        $this->user->isLoggedIn();
     }
 
 

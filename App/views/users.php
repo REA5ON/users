@@ -85,6 +85,9 @@
                         <a href="mailto:<?= $this->e($user['email']) ?>" class="mt-1 d-block fs-sm fw-400 text-dark">
                             <i class="fas fa-mouse-pointer text-muted mr-2"></i><?= $this->e($user['email']) ?></a>
                         <address class="fs-sm fw-400 mt-4 text-muted">
+                            <i class="fas fa-map-pin mr-2"></i><?= $this->e($user['place_of_work']) ?>
+                        </address>
+                        <address class="fs-sm fw-400 mt-4 text-muted">
                             <i class="fas fa-map-pin mr-2"></i><?= $this->e($user['address']) ?>
                         </address>
                         <div class="d-flex flex-row">

@@ -52,7 +52,15 @@ class User
     public function login()
     {
         try {
-            $this->auth->login($_POST['email'], $_POST['password']);
+            if ($_POST['rememberme'] == 'on') {
+                // keep logged in for one year
+                $rememberDuration = (int) (60 * 60 * 24 * 365.25);
+            }
+            else {
+                // do not keep logged in after session ends
+                $rememberDuration = null;
+            }
+            $this->auth->login($_POST['email'], $_POST['password'], $rememberDuration);
             flash()->success('User is logged in');
         } catch (\Delight\Auth\InvalidEmailException $e) {
             flash()->error('Wrong email address');
@@ -102,15 +110,6 @@ class User
         $auth = new Auth($pdo);
         $id = $auth->getUserId();
         return strval($id);
-    }
-
-    public function isAdminOrAuthor($vars)
-    {
-        $id = intval($vars['id']);
-        if (!User::isAdmin() && $this->auth->getUserId() !== $id) {
-            flash()->error('You can modify just your profile!');
-            Redirect::to('');
-        }
     }
 
     /** Changing the current user’s password */
@@ -193,4 +192,40 @@ class User
         }
     }
 
+    public function isLoggedIn()
+    {
+        if (!$this->auth->check()) {
+            Redirect::to('login');
+        }
+    }
+
+    public function admin()
+    {
+        if ($this->auth->hasRole(1)) {
+            return true;
+        } else {
+            flash()->error('Not enough rights to action!');
+            Redirect::to('');
+        }
+    }
+
+    public function isAuthor($id)
+    {
+        $sessionId = $this->auth->getUserId();
+        if ($sessionId !== $id)
+        {
+            flash()->error('You can modify just your profile!');
+            Redirect::to('');
+        }
+    }
+
+    public function isAuthorOrAdmin($id)
+    {
+        $userId = intval($id);
+        if (!$this->auth->hasRole(1) && $this->auth->getUserId() !== $userId)
+            {
+                flash()->error('Not enough rights to action!');
+                Redirect::to('');
+            }
+    }
 }

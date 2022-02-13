@@ -5,6 +5,7 @@ namespace App\controllers;
 use App\QueryBuilder;
 use App\Redirect;
 use App\User;
+use Delight\Auth\Auth;
 use League\Plates\Engine;
 
 class EditController
@@ -18,12 +19,15 @@ class EditController
         $this->user = $user;
         $this->qb = $qb;
         $this->engine = $engine;
+
+        $this->user->isLoggedIn();
+
+
     }
 
     public function index($vars)
     {
-        $this->user->isAdminOrAuthor($vars);
-
+        $this->user->isAuthorOrAdmin($vars['id']);
         $user = $this->qb->getOne('user_data', $vars['id']);
         echo $this->engine->render('edit', ['user' => $user]);
     }
@@ -31,6 +35,7 @@ class EditController
     public function editUser($vars)
     {
         $id = $vars['id'];
+        $this->user->isAuthorOrAdmin($id);
         $this->qb->update('users', ['username' => $_POST['username']], $id);
         $this->qb->update('user_data',
             [

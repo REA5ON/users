@@ -32,6 +32,6 @@ return array(
     'DI\\' => array($vendorDir . '/php-di/php-di/src'),
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
     'Aura\\SqlQuery\\' => array($vendorDir . '/aura/sqlquery/src'),
-    'App\\' => array($baseDir . '/app'),
+    'App\\' => array($baseDir . '/App'),
     '' => array($vendorDir . '/league/color-extractor/src'),
 );
