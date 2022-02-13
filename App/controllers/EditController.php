@@ -4,30 +4,35 @@ namespace App\controllers;
 
 use App\QueryBuilder;
 use App\Redirect;
-use App\Template;
 use App\User;
-use Delight\Auth\Auth;
-use PDO;
+use League\Plates\Engine;
 
 class EditController
 {
+    protected $user;
+    protected $qb;
+    protected $engine;
 
-    public function template($vars)
+    public function __construct(User $user, QueryBuilder $qb, Engine $engine)
     {
-        $isAdminOrAuthor = new User();
-        $isAdminOrAuthor->isAdminOrAuthor($vars);
+        $this->user = $user;
+        $this->qb = $qb;
+        $this->engine = $engine;
+    }
 
-        $user = new QueryBuilder();
-        $user = $user->getOne('user_data', $vars['id']);
-        Template::template('edit', ['user' => $user]);
+    public function index($vars)
+    {
+        $this->user->isAdminOrAuthor($vars);
+
+        $user = $this->qb->getOne('user_data', $vars['id']);
+        echo $this->engine->render('edit', ['user' => $user]);
     }
 
     public function editUser($vars)
     {
         $id = $vars['id'];
-        $qb = new QueryBuilder();
-        $qb->update('users', ['username' => $_POST['username']], $id);
-        $qb->update('user_data',
+        $this->qb->update('users', ['username' => $_POST['username']], $id);
+        $this->qb->update('user_data',
             [
                 'username' => $_POST['username'],
                 'place_of_work' => $_POST['place_of_work'],

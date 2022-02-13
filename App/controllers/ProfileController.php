@@ -5,16 +5,22 @@ namespace App\controllers;
 use App\QueryBuilder;
 use App\Template;
 use App\User;
+use League\Plates\Engine;
 
 class ProfileController
 {
-    public function template($vars)
+    protected $qb;
+    protected $engine;
+
+    public function __construct(QueryBuilder $qb, Engine $engine)
     {
-        $user = new QueryBuilder();
-        $user = $user->getOne('user_data', $vars['id']);
-        Template::template('page_profile',
-        [
-            'user' => $user
-        ]);
+        $this->qb = $qb;
+        $this->engine = $engine;
+    }
+
+    public function index($vars)
+    {
+        $user = $this->qb->getOne('user_data', $vars['id']);
+        echo $this->engine->render('page_profile', ['user' => $user]);
     }
 }

@@ -7,31 +7,29 @@ use App\Redirect;
 use App\Template;
 use App\User;
 use Delight\Auth\Auth;
-use PDO;
+use League\Plates\Engine;
 
 class SecurityController
 {
-    protected $user, $qb, $auth;
+    protected $user;
+    protected $engine;
+    protected $qb;
+    protected $auth;
 
-    public function __construct()
+    public function __construct(User $user, QueryBuilder $qb, Engine $engine, Auth $auth)
     {
-        $this->user = new User();
-        $this->qb = new QueryBuilder();
-        $pdo = new PDO('mysql:host=localhost;dbname=app3', 'root', 'root');
-        $this->auth = new Auth($pdo);
+        $this->user = $user;
+        $this->qb = $qb;
+        $this->engine = $engine;
+        $this->auth = $auth;
     }
 
-    public function template($vars)
+    public function index($vars)
     {
-        $isAdminOrAuthor = $this->user;
-        $isAdminOrAuthor->isAdminOrAuthor($vars);
+        $this->user->isAdminOrAuthor($vars);
 
-        $user = $this->qb;
-        $user = $user->getOne('user_data', $vars['id']);
-        Template::template('security',
-            [
-                'user' => $user
-            ]);
+        $user = $this->qb->getOne('user_data', $vars['id']);
+        echo $this->engine->render('security', ['user' => $user]);
     }
 
 
@@ -50,22 +48,21 @@ class SecurityController
         } else {
             $this->user->changePassword();
         }
+        flash()->success('Password was be changed!');
         Redirect::to('');
     }
 
     public function emailVerification($vars)
     {
         $this->user->emailVerification($vars['selector'], $vars['token']);
-        Redirect::to('');
     }
 
+    /** Верифицирует имейл и обновляет его в таблице user_data */
     public function changeEmail($vars)
     {
         $this->user->emailVerification($vars['selector'], $vars['token']);
         $email = $this->auth->getEmail();
         $id = $this->auth->getUserId();
         $this->qb->update('user_data', ['email' => $email], $id);
-        Redirect::to('');
     }
-
 }

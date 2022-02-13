@@ -22,7 +22,7 @@
                 <a class="nav-link" href="login">Войти</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Выйти</a>
+                <a class="nav-link" href="logout">Выйти</a>
             </li>
         </ul>
     </div>

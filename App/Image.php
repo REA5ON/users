@@ -7,15 +7,22 @@ use Exception;
 
 class Image
 {
+    protected $image, $qb;
+
+    public function __construct(SimpleImage $image, QueryBuilder $qb)
+    {
+        $this->image = $image;
+        $this->qb = $qb;
+    }
+
     public function saveImage($from, $path)
     {
         try {
             // Create a new SimpleImage object
-            $image = new \claviska\SimpleImage();
             $newName = uniqid();
             $newImagePatch = $path . $newName . '.png';
 
-            $image
+            $this->image
                 ->fromFile($from)                     // load image.jpg
                 ->resize(296, 296)                          // resize to 296x296 pixels
                 ->toFile('..' . $newImagePatch, 'image/png'); // convert to PNG and save a copy to new-image.png
@@ -32,17 +39,26 @@ class Image
     public function updateImage($userId, $from, $path)
     {
         try {
-            $qb = new QueryBuilder();
-            $user = $qb->getOne('user_data', $userId);
+            $user = $this->qb->getOne('user_data', $userId);
 
             if ($user['image'] !== '/App/views/img/users_images/empty_image.png') {
                 unlink('..' . $user['image']);
             }
             $image = $this->saveImage($from, $path);
-            $qb->update('user_data', ['image' => $image], $userId);
+            $this->qb->update('user_data', ['image' => $image], $userId);
 
         } catch (Exception $err) {
             echo $err->getMessage();
+        }
+
+    }
+
+    public static function emptyImage($image)
+    {
+        if ($image === '') {
+            echo '/App/views/img/users_images/empty_image.png';
+        } else {
+            echo $image;
         }
 
     }

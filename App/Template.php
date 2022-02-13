@@ -5,9 +5,15 @@ use League\Plates\Engine;
 
 class Template
 {
-    public static function template($render, $data = [])
+    protected $engine;
+
+    public function __construct(Engine $engine)
     {
-        $templates = new Engine('../App/views');
-        echo $templates->render($render ,$data);
+        $this->engine = $engine;
+    }
+
+    public function template($render, $data = [])
+    {
+        echo $this->engine->render($render ,$data);
     }
 }

@@ -5,31 +5,41 @@ namespace App\controllers;
 use App\Image;
 use App\QueryBuilder;
 use App\Redirect;
-use App\Template;
 use App\User;
+use League\Plates\Engine;
 
 class CreateController
 {
-    public function __construct()
+    protected $engine;
+    protected $qb;
+    protected $image;
+    protected $user;
+
+    public function __construct(User $user, Image $image, QueryBuilder $qb,Engine $engine)
     {
         if (!User::isAdmin()) {
             Redirect::to('');
         }
+
+        $this->user = $user;
+        $this->image = $image;
+        $this->qb = $qb;
+        $this->engine = $engine;
     }
-    public function template()
+
+
+    public function index()
     {
-        Template::template('create_user');
+        echo $this->engine->render('create_user');
     }
+
 
     public function createUser()
     {
-        $user = new User();
-        $id = $user->createUser();
+        $id = $this->user->createUser();
 
-        $image = new Image();
-        $image = $image->saveImage($_FILES['image']['tmp_name'], '/App/views/img/users_images/');
-        $db = new QueryBuilder();
-        $db->insert('user_data',
+        $image = $this->image->saveImage($_FILES['image']['tmp_name'], '/App/views/img/users_images/');
+        $this->qb->insert('user_data',
             [
                 'id' => $id,
                 'username' => $_POST['username'],

@@ -36,12 +36,14 @@
                     <div class="d-flex flex-row align-items-center">
                                 <span class="status status-<?= $this->e($user['status']) ?> mr-3">
                                     <span class="rounded-circle profile-image d-block "
-                                          style="background-image:url(<?= $this->e($user['image']) ?>); background-size: cover;"></span>
+                                          style="background-image:url(<?php \App\Image::emptyImage($this->e($user['image']));?>); background-size: cover;"></span>
                                 </span>
+
                         <div class="info-card-text flex-1">
                             <a href="/profile/<?= $this->e($user['id']) ?>" class="fs-xl text-truncate text-truncate-lg text-info">
                                <?= $this->e($user['username']) ?>
                             </a>
+                            <?php if (($this->e($user['id']) === \App\User::getUserId()) || \App\User::isAdmin()) :?>
                             <a href="" class="fs-xl text-truncate text-truncate-lg text-info"
                                data-toggle="dropdown" aria-expanded="false">
                                 <i class="fal fas fa-cog fa-fw d-inline-block ml-1 fs-md"></i>
@@ -66,6 +68,7 @@
                                     Удалить
                                 </a>
                             </div>
+                            <?php endif; ?>
                             <span class="text-truncate text-truncate-xl">Name</span>
                         </div>
                         <button class="js-expand-btn btn btn-sm btn-default d-none" data-toggle="collapse"

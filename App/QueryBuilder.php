@@ -9,10 +9,10 @@ class QueryBuilder extends \PDO
 {
     private $pdo, $queryFactory;
 
-    public function __construct()
+    public function __construct(PDO $pdo, QueryFactory $queryFactory)
     {
-        $this->pdo = new PDO('mysql:host=localhost;dbname=app3', 'root', 'root');
-        $this->queryFactory = new QueryFactory('mysql');
+        $this->pdo = $pdo;
+        $this->queryFactory = $queryFactory; //new QueryFactory('mysql');
     }
 
     public function getAll($table, $cols = "*")

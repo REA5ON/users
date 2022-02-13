@@ -6,28 +6,32 @@ use App\QueryBuilder;
 use App\Redirect;
 use App\Template;
 use App\User;
+use League\Plates\Engine;
 
 class StatusController
 {
-    public function template($vars){
-        $isAdminOrAuthor = new User();
-        $isAdminOrAuthor->isAdminOrAuthor($vars);
+    protected $user;
+    protected $qb;
+    protected $engine;
 
-        $user = new QueryBuilder();
-        $user = $user->getOne('user_data', $vars['id']);
-        Template::template('status',
-            [
-                'user' => $user
-            ]);
+    public function __construct(User $user, QueryBuilder $qb, Engine $engine)
+    {
+        $this->user = $user;
+        $this->qb = $qb;
+        $this->engine = $engine;
+    }
+
+    public function index($vars){
+        $this->user->isAdminOrAuthor($vars);
+
+        $user = $this->qb->getOne('user_data', $vars['id']);
+        echo $this->engine->render('status', ['user' => $user]);
     }
 
     public function setStatus($vars)
     {
-        $isAdminOrAuthor = new User();
-        $isAdminOrAuthor->isAdminOrAuthor($vars);
-
-        $db = new QueryBuilder();
-        $db->update('user_data',
+        $this->user->isAdminOrAuthor($vars);
+        $this->qb->update('user_data',
             ['status' => $_POST['status']],
             $vars['id']);
 

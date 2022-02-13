@@ -7,28 +7,33 @@ use App\QueryBuilder;
 use App\Redirect;
 use App\Template;
 use App\User;
+use League\Plates\Engine;
 
 class MediaController
 {
-    public function template($vars){
-        $isAdminOrAuthor = new User();
-        $isAdminOrAuthor->isAdminOrAuthor($vars);
+    protected $user;
+    protected $qb;
+    protected $image;
+    protected $engine;
 
-        $user = new QueryBuilder();
-        $user = $user->getOne('user_data', $vars['id']);
-        Template::template('media',
-            [
-                'user' => $user
-            ]);
+    public function __construct(User $user, QueryBuilder $qb, Image $image, Engine $engine)
+    {
+        $this->user = $user;
+        $this->qb = $qb;
+        $this->image = $image;
+        $this->engine = $engine;
     }
 
-    /**
-     * @throws \Tamtamchik\SimpleFlash\Exceptions\FlashTemplateNotFoundException
-     */
+    public function index($vars){
+        $this->user->isAdminOrAuthor($vars);
+
+        $user = $this->qb->getOne('user_data', $vars['id']);
+        echo $this->engine->render('media', ['user' => $user]);
+    }
+
     public function updateImage($vars)
     {
-        $image = new Image();
-        $image->updateImage($vars['id'], $_FILES['image']['tmp_name'], '/App/views/img/users_images/');
+        $this->image->updateImage($vars['id'], $_FILES['image']['tmp_name'], '/App/views/img/users_images/');
         flash()->success('Avatar has been update!');
         Redirect::to('');
     }
