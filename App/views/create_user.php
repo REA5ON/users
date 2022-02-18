@@ -6,6 +6,7 @@
                 <i class='subheader-icon fal fa-plus-circle'></i> Добавить пользователя
             </h1>
         </div>
+        <?php echo flash()->display(); ?>
         <form action="create" method="post" enctype="multipart/form-data">
             <div class="row">
                 <div class="col-xl-6">

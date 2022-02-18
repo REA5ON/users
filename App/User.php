@@ -3,6 +3,7 @@
 namespace App;
 
 use Delight\Auth\Auth;
+use Delight\Auth\AuthError;
 use Delight\Auth\Role;
 use PDO;
 use SimpleMail;
@@ -29,22 +30,22 @@ class User
                     ->setTo('test@gmail.com', 'Test')
                     ->setMessage($url)
                     ->send();
-                flash()->success("Registration complete!");
+                flash()->success("Please check your email! We have sent an " . $_POST['email'] . " instructions to you.");
             });
 
             return $userId;
         } catch (\Delight\Auth\InvalidEmailException $e) {
             flash()->error('Invalid email address');
-            Redirect::to('registration');
+            Redirect::stay();
         } catch (\Delight\Auth\InvalidPasswordException $e) {
             flash()->error('Invalid password');
-            Redirect::to('registration');
+            Redirect::stay();
         } catch (\Delight\Auth\UserAlreadyExistsException $e) {
             flash()->error('User already exists');
-            Redirect::to('registration');
+            Redirect::stay();
         } catch (\Delight\Auth\TooManyRequestsException $e) {
             flash()->error('Too many requests');
-            Redirect::to('registration');
+            Redirect::stay();
         }
     }
 
@@ -64,16 +65,16 @@ class User
             flash()->success('User is logged in');
         } catch (\Delight\Auth\InvalidEmailException $e) {
             flash()->error('Wrong email address');
-            Redirect::to('login');
+            Redirect::stay();
         } catch (\Delight\Auth\InvalidPasswordException $e) {
             flash()->error('Wrong password');
-            Redirect::to('login');
+            Redirect::stay();
         } catch (\Delight\Auth\EmailNotVerifiedException $e) {
             flash()->error('Email not verified');
-            Redirect::to('login');
+            Redirect::stay();
         } catch (\Delight\Auth\TooManyRequestsException $e) {
             flash()->error('Too many requests');
-            Redirect::to('login');
+            Redirect::stay();
         }
     }
 
@@ -85,13 +86,13 @@ class User
             return $userId;
         } catch (\Delight\Auth\InvalidEmailException $e) {
             flash()->error('Invalid email address');
-            Redirect::to('create');
+            Redirect::stay();
         } catch (\Delight\Auth\InvalidPasswordException $e) {
             flash()->error('Invalid password');
-            Redirect::to('create');
+            Redirect::stay();
         } catch (\Delight\Auth\UserAlreadyExistsException $e) {
             flash()->error('User already exists');
-            Redirect::to('create');
+            Redirect::stay();
         }
     }
 
@@ -116,15 +117,23 @@ class User
     public function changePassword()
     {
         try {
-            $this->auth->changePassword($_POST['password'], $_POST['newPassword']);
+            $this->auth->changePassword($_POST['oldPassword'], $_POST['newPassword']);
 
-            echo 'Password has been changed';
-        } catch (\Delight\Auth\NotLoggedInException $e) {
-            die('Not logged in');
-        } catch (\Delight\Auth\InvalidPasswordException $e) {
-            die('Invalid password(s)');
-        } catch (\Delight\Auth\TooManyRequestsException $e) {
-            die('Too many requests');
+            flash()->success('Password has been changed!');
+        }
+        catch (\Delight\Auth\NotLoggedInException $e) {
+            flash()->error('Not logged in');
+            Redirect::stay();
+        }
+        catch (\Delight\Auth\InvalidPasswordException $e) {
+            flash()->error('Invalid password(s)');
+            Redirect::stay();
+        }
+        catch (\Delight\Auth\TooManyRequestsException $e) {
+            flash()->error('Too many requests');
+            Redirect::stay();
+        } catch (AuthError $e) {
+            d($e);
         }
     }
 
@@ -132,8 +141,8 @@ class User
     public function changeEmail()
     {
         try {
-            if ($this->auth->reconfirmPassword($_POST['password'])) {
-                $this->auth->changeEmail($_POST['email'], function ($selector, $token) {
+            if ($this->auth->reconfirmPassword($_POST['password']) && $this->auth->admin()) {
+                $this->auth->changeEmail($_POST['newEmail'], function ($selector, $token) {
                     $url = 'level3/change_email/' . \urlencode($selector) . '&' . \urlencode($token);
                     $send = SimpleMail::make()
                         ->setTo('test@gmail.com', 'Test')
@@ -145,20 +154,24 @@ class User
                 });
 
                 flash()->success('The change will take effect as soon as the new email address has been confirmed');
-                Redirect::to('');
             } else {
                 flash()->error('We can\'t say if the user is who they claim to be');
             }
         } catch (\Delight\Auth\InvalidEmailException $e) {
             flash()->error('Invalid email address');
+            Redirect::stay();
         } catch (\Delight\Auth\UserAlreadyExistsException $e) {
             flash()->error('Email address already exists');
+            Redirect::stay();
         } catch (\Delight\Auth\EmailNotVerifiedException $e) {
             flash()->error('Account not verified');
+            Redirect::stay();
         } catch (\Delight\Auth\NotLoggedInException $e) {
             flash()->error('Not logged in');
+            Redirect::stay();
         } catch (\Delight\Auth\TooManyRequestsException $e) {
             flash()->error('Too many requests');
+            Redirect::stay();
         }
     }
 
@@ -169,8 +182,10 @@ class User
             $this->auth->admin()->changePasswordForUserById($id, $newPassword);
         } catch (\Delight\Auth\UnknownIdException $e) {
             flash()->error('Unknown ID');
+            Redirect::stay();
         } catch (\Delight\Auth\InvalidPasswordException $e) {
             flash()->error('Invalid password');
+            Redirect::stay();
         }
     }
 
@@ -183,15 +198,22 @@ class User
 
         } catch (\Delight\Auth\InvalidSelectorTokenPairException $e) {
             flash()->error('Invalid token');
+            Redirect::to('login');
         } catch (\Delight\Auth\TokenExpiredException $e) {
             flash()->error('Token expired');
+            Redirect::to('login');
         } catch (\Delight\Auth\UserAlreadyExistsException $e) {
             flash()->error('Email address already exists');
+            Redirect::to('login');
         } catch (\Delight\Auth\TooManyRequestsException $e) {
             flash()->error('Too many requests');
+            Redirect::to('login');
+        } catch (AuthError $e) {
+            flash()->error('XD');
         }
     }
 
+    /** check user in session */
     public function isLoggedIn()
     {
         if (!$this->auth->check()) {
@@ -199,6 +221,7 @@ class User
         }
     }
 
+    /** if user has role ADMIN */
     public function admin()
     {
         if ($this->auth->hasRole(1)) {
@@ -219,10 +242,12 @@ class User
         }
     }
 
+    /** Check roles */
     public function isAuthorOrAdmin($id)
     {
-        $userId = intval($id);
-        if (!$this->auth->hasRole(1) && $this->auth->getUserId() !== $userId)
+        $userId = intval($id['id']);
+
+        if (!$this->auth->hasRole(1) && ($this->auth->getUserId() !== $userId))
             {
                 flash()->error('Not enough rights to action!');
                 Redirect::to('');

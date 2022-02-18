@@ -35,11 +35,19 @@ class RegisterController
 
     public function registration()
     {
-        $this->valid->validation();die;
-        //если проходит регистрация - получаем ID
+        //validation POST
+        $this->valid->validation(
+            [
+                'required' => [['email', 'password', 'username']],
+                'email' => [['email']],
+                'length' => [['password', 6]]
+            ]
+        );
+
+        //if registration was completed - return ID
         $id = $this->user->registration();
 
-        //Вставляем данные в таблицу user_data
+        //Insert data to table "user_data"
         $this->qb->insert('user_data', [
             'id' => $id,
             'username' => $_POST['username'],

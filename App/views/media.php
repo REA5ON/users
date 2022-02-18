@@ -16,7 +16,7 @@
                             </div>
                             <div class="panel-content">
                                 <div class="form-group">
-                                    <img src="<?= $this->e($user['image']) ?>" alt="" class="img-responsive" width="200">
+                                    <img src="<?php \App\Image::emptyImage($this->e($user['image']));?>" alt="" class="img-responsive" width="200">
                                 </div>
 
                                 <div class="form-group">

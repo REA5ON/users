@@ -6,6 +6,7 @@ use App\Image;
 use App\QueryBuilder;
 use App\Redirect;
 use App\User;
+use App\Validation;
 use League\Plates\Engine;
 
 class CreateController
@@ -14,8 +15,9 @@ class CreateController
     protected $qb;
     protected $image;
     protected $user;
+    protected $valid;
 
-    public function __construct(User $user, Image $image, QueryBuilder $qb,Engine $engine)
+    public function __construct(User $user, Image $image, QueryBuilder $qb,Engine $engine, Validation $validation)
     {
         if (!User::isAdmin()) {
             Redirect::to('');
@@ -25,8 +27,9 @@ class CreateController
         $this->image = $image;
         $this->qb = $qb;
         $this->engine = $engine;
+        $this->valid = $validation;
 
-        $this->user->isNotLoggedIn();
+        $this->user->isLoggedIn();
     }
 
 
@@ -38,9 +41,20 @@ class CreateController
 
     public function createUser()
     {
+        //validation POST
+        $this->valid->validation(
+            [
+                'required' => [['email', 'password', 'username']],
+                'email' => [['email']],
+                'length' => [['password', 6]]
+            ]
+        );
+
+        //email, password, username
         $id = $this->user->createUser();
 
         $image = $this->image->saveImage($_FILES['image']['tmp_name'], '/App/views/img/users_images/');
+
         $this->qb->insert('user_data',
             [
                 'id' => $id,

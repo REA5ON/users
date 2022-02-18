@@ -21,7 +21,7 @@ class UsersController
         $this->engine = $engine;
         $this->user = $user;
 
-//        $this->user->isLoggedIn();
+        $this->user->isLoggedIn();
     }
 
 

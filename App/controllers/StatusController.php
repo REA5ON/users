@@ -19,11 +19,14 @@ class StatusController
         $this->qb = $qb;
         $this->engine = $engine;
 
-        $this->user->isNotLoggedIn();
+        $this->user->isLoggedIn();
     }
 
-    public function index($vars){
-//        $this->user->isAdminOrAuthor($vars);
+    public function index($vars)
+    {
+        //check roles
+        $this->user->isAuthorOrAdmin($vars);
+
 
         $user = $this->qb->getOne('user_data', $vars['id']);
         echo $this->engine->render('status', ['user' => $user]);
@@ -31,12 +34,13 @@ class StatusController
 
     public function setStatus($vars)
     {
-        $this->user->isAdminOrAuthor($vars);
+        $this->user->isAuthorOrAdmin($vars);
+
         $this->qb->update('user_data',
             ['status' => $_POST['status']],
             $vars['id']);
 
-        flash()->success('Статус обновлен!');
+        flash()->success('Status was be changed!');
         Redirect::to('');
     }
 }

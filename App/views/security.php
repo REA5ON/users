@@ -7,6 +7,7 @@
         </h1>
 
     </div>
+    <?php echo flash()->display(); ?>
     <form action="/security/<?= $this->e($user['id']) ?>" method="post"
     ">
     <div class="row">
@@ -20,7 +21,7 @@
                         <!-- email -->
                         <div class="form-group">
                             <label class="form-label" for="simpleinput">Email</label>
-                            <input type="text" name="email" id="simpleinput" class="form-control"
+                            <input type="text" name="newEmail" id="simpleinput" class="form-control"
                                    value="<?= $this->e($user['email']) ?>">
                             <div class="help-block">Если меняете эл. адрес, письмо будет отправлено на новый эл. адрес</div>
                         </div>
@@ -29,7 +30,7 @@
                         <?php if (!\App\User::isAdmin()) : ?>
                         <div class="form-group">
                             <label class="form-label" for="simpleinput">Старый пароль</label>
-                            <input type="password" name="password" id="simpleinput" class="form-control">
+                            <input type="password" name="oldPassword" id="simpleinput" class="form-control">
                         </div>
                         <?php endif; ?>
 

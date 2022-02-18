@@ -21,13 +21,11 @@ class EditController
         $this->engine = $engine;
 
         $this->user->isLoggedIn();
-
-
     }
 
     public function index($vars)
     {
-        $this->user->isAuthorOrAdmin($vars['id']);
+        $this->user->isAuthorOrAdmin($vars);
         $user = $this->qb->getOne('user_data', $vars['id']);
         echo $this->engine->render('edit', ['user' => $user]);
     }
@@ -44,6 +42,7 @@ class EditController
                 'phone' => $_POST['phone'],
                 'address' => $_POST['address']
             ], $id);
+        flash()->success('User data has been changed!');
         Redirect::to('');
     }
 }

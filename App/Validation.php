@@ -13,20 +13,23 @@ class Validation
         $this->v = $validator;
     }
 
-    public function validation()
+    public function validation($rules)
     {
         try {
-            //El problema
-            $v = new Validator(array($_POST));
-            $v->rules([
-                'required' => ['username', 'password', 'email'],
-                'lengthMin' => ['password', 6]
-
-            ]);
-            $v->validate();
-
-        } catch (\Exception $exception){
-            d($v->errors());
+            $v = new Validator($_POST);
+            $v->rules($rules);
+            if ($v->validate()) {
+                return true;
+            } else {
+                //get all errors
+                foreach ($v->errors() as $error) {
+                    flash()->error($error);
+                }
+                Redirect::stay();
+            }
+            //Создать новый exception
+        } catch (\Exception $exception) {
+            echo $exception->getMessage();
         }
     }
 }

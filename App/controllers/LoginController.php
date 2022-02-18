@@ -7,6 +7,7 @@ if (!session_id()) @session_start();
 
 use App\Redirect;
 use App\User;
+use App\Validation;
 use Delight\Auth\Auth;
 use League\Plates\Engine;
 use PDO;
@@ -15,11 +16,13 @@ class LoginController
 {
     protected $user;
     protected $engine;
+    protected $valid;
 
-    public function __construct(User $user, Engine $engine)
+    public function __construct(User $user, Engine $engine, Validation $validation)
     {
         $this->user = $user;
         $this->engine = $engine;
+        $this->valid = $validation;
     }
 
     public function index()
@@ -29,6 +32,14 @@ class LoginController
 
     public function login()
     {
+        //validation POST
+        $this->valid->validation(
+            [
+                'required' => [['email', 'password', 'username']],
+                'email' => [['email']],
+                'lengthMin' => [['password', 6]]
+            ]
+        );
         $this->user->login();
         Redirect::to('');
     }

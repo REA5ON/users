@@ -18,7 +18,6 @@ class Image
     public function saveImage($from, $path)
     {
         try {
-            // Create a new SimpleImage object
             $newName = uniqid();
             $newImagePatch = $path . $newName . '.png';
 
@@ -31,7 +30,7 @@ class Image
 
         } catch (Exception $err) {
             // Handle errors
-            echo $err->getMessage();
+//            flash()->error($err->getMessage());
         }
 
     }
@@ -39,11 +38,14 @@ class Image
     public function updateImage($userId, $from, $path)
     {
         try {
+            //get image path
             $user = $this->qb->getOne('user_data', $userId);
 
-            if ($user['image'] !== '/App/views/img/users_images/empty_image.png') {
+            //delete
+            if (!empty($user['image'])) {
                 unlink('..' . $user['image']);
             }
+            //save
             $image = $this->saveImage($from, $path);
             $this->qb->update('user_data', ['image' => $image], $userId);
 

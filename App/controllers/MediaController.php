@@ -22,11 +22,11 @@ class MediaController
         $this->image = $image;
         $this->engine = $engine;
 
-        $this->user->isNotLoggedIn();
+        $this->user->isLoggedIn();
     }
 
     public function index($vars){
-//        $this->user->isAdminOrAuthor($vars);
+        $this->user->isAuthorOrAdmin($vars['id']);
 
         $user = $this->qb->getOne('user_data', $vars['id']);
         echo $this->engine->render('media', ['user' => $user]);
@@ -34,6 +34,7 @@ class MediaController
 
     public function updateImage($vars)
     {
+        $this->user->isAuthorOrAdmin($vars['id']);
         $this->image->updateImage($vars['id'], $_FILES['image']['tmp_name'], '/App/views/img/users_images/');
         flash()->success('Avatar has been update!');
         Redirect::to('');
