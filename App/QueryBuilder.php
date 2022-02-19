@@ -18,14 +18,24 @@ class QueryBuilder extends \PDO
     public function getAll($table, $cols = "*")
     {
         $select = $this->queryFactory->newSelect();
-
         $select->cols([$cols])
             ->from($table);
 
         $sth = $this->pdo->prepare($select->getStatement());
-
         $sth->execute($select->getBindValues());
+        return $sth->fetchAll(PDO::FETCH_ASSOC);
+    }
 
+    public function pagination($limit)
+    {
+        $select = $this->queryFactory->newSelect();
+        $select->cols(['*'])
+            ->from('user_data')
+            ->setPaging($limit)
+            ->page($_GET['page'] ?? 1);
+
+        $sth = $this->pdo->prepare($select->getStatement());
+        $sth->execute($select->getBindValues());
         return $sth->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -40,25 +50,8 @@ class QueryBuilder extends \PDO
             ->bindValue('id', $id);
 
         $sth = $this->pdo->prepare($select->getStatement());
-
         $sth->execute($select->getBindValues());
-
         return $sth->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function getSelectedData($table, $data, $id)
-    {
-        $select = $this->queryFactory->newSelect();
-        $select->cols(["*"])
-            ->from($table)
-            ->where( $id . ' = :data')
-            ->bindValue('data', $data);
-
-        $sth = $this->pdo->prepare($select->getStatement());
-
-        $sth->execute($select->getBindValues());
-
-        return $sth->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function insert($table, $data)
@@ -69,9 +62,7 @@ class QueryBuilder extends \PDO
         ->cols($data);
 
         $sth = $this->pdo->prepare($insert->getStatement());
-
         $sth->execute($insert->getBindValues());
-
         $name = $insert->getLastInsertIdName('id');
         return $this->pdo->lastInsertId($name);
     }
@@ -88,7 +79,6 @@ class QueryBuilder extends \PDO
             ->bindValue('id', $id);
 
         $sth = $this->pdo->prepare($update->getStatement());
-
         $sth->execute($update->getBindValues());
     }
 
@@ -102,7 +92,6 @@ class QueryBuilder extends \PDO
             ->bindValue('id', $id);
 
         $sth = $this->pdo->prepare($delete->getStatement());
-
         $sth->execute($delete->getBindValues());
 
     }

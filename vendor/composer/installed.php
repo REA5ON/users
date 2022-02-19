@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '255c20dbefb8a636474d05a4aea940cf556bb724',
+        'reference' => '59ba792ffe675cfc9852a2c1cb6888f25d20c996',
         'name' => '__root__',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '255c20dbefb8a636474d05a4aea940cf556bb724',
+            'reference' => '59ba792ffe675cfc9852a2c1cb6888f25d20c996',
             'dev_requirement' => false,
         ),
         'aura/sqlquery' => array(
@@ -134,6 +134,15 @@
             'install_path' => __DIR__ . '/../illuminate/support',
             'aliases' => array(),
             'reference' => 'f542bb78a8a1013ab33fbe14974c45b2a88993d0',
+            'dev_requirement' => false,
+        ),
+        'jasongrimes/paginator' => array(
+            'pretty_version' => '1.0.3',
+            'version' => '1.0.3.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../jasongrimes/paginator',
+            'aliases' => array(),
+            'reference' => '3411e3cd0c6479a0b514f26e4358f0273552f221',
             'dev_requirement' => false,
         ),
         'kint-php/kint' => array(

@@ -141,7 +141,7 @@ class User
     public function changeEmail()
     {
         try {
-            if ($this->auth->reconfirmPassword($_POST['password']) && $this->auth->admin()) {
+            if ($this->auth->reconfirmPassword($_POST['oldPassword'])) {
                 $this->auth->changeEmail($_POST['newEmail'], function ($selector, $token) {
                     $url = 'level3/change_email/' . \urlencode($selector) . '&' . \urlencode($token);
                     $send = SimpleMail::make()
@@ -156,6 +156,7 @@ class User
                 flash()->success('The change will take effect as soon as the new email address has been confirmed');
             } else {
                 flash()->error('We can\'t say if the user is who they claim to be');
+                Redirect::to('');
             }
         } catch (\Delight\Auth\InvalidEmailException $e) {
             flash()->error('Invalid email address');

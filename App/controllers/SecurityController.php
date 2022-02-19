@@ -57,14 +57,14 @@ class SecurityController
         }
 
         //change password
-        if ($this->auth->admin()) {
+        if ($this->auth->hasRole(1)) {
+            echo 321;
             $this->user->changePasswordAsAdmin($id, $_POST['newPassword']);
         } else {
             $this->user->changePassword();
-            echo 123;die;
         }
 
-//        Redirect::to('');
+        Redirect::to('');
     }
 
     public function emailVerification($vars)
