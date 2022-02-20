@@ -28,6 +28,7 @@ class SecurityController
         $this->user->isLoggedIn();
     }
 
+
     public function index($vars)
     {
         $this->user->isAuthorOrAdmin($vars);
@@ -37,6 +38,7 @@ class SecurityController
     }
 
 
+    /** Edit user credential */
     public function editCredential($vars)
     {
         $this->user->isAuthorOrAdmin($vars);
@@ -50,6 +52,7 @@ class SecurityController
         );
 
         $id = intval($vars['id']);
+        //return array
         $email = $this->qb->getOne('users', $id);
         //if changed email
         if ($_POST['newEmail'] !== $email['email']) {
@@ -58,7 +61,6 @@ class SecurityController
 
         //change password
         if ($this->auth->hasRole(1)) {
-            echo 321;
             $this->user->changePasswordAsAdmin($id, $_POST['newPassword']);
         } else {
             $this->user->changePassword();
@@ -73,7 +75,7 @@ class SecurityController
         Redirect::to('login');
     }
 
-    /** Верифицирует имейл и обновляет его в таблице user_data */
+    /** Verifies the email and updates it in the table user_data */
     public function changeEmail($vars)
     {
         $this->user->emailVerification($vars['selector'], $vars['token']);

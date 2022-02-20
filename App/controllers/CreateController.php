@@ -19,16 +19,13 @@ class CreateController
 
     public function __construct(User $user, Image $image, QueryBuilder $qb,Engine $engine, Validation $validation)
     {
-        if (!User::isAdmin()) {
-            Redirect::to('');
-        }
-
         $this->user = $user;
         $this->image = $image;
         $this->qb = $qb;
         $this->engine = $engine;
         $this->valid = $validation;
 
+        $this->user->admin();
         $this->user->isLoggedIn();
     }
 

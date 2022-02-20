@@ -33,12 +33,13 @@ $containerBuilder->addDefinitions(
         }
     ]
 );
+
 $container = $containerBuilder->build();
 
 
 $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     //homepage
-    $r->addRoute('GET', '/', ['App\controllers\UsersController', 'index']);
+    $r->addRoute('GET', '/page={id:\d+}', ['App\controllers\UsersController', 'index']);
 
     $r->addRoute('GET', '/login', ['App\controllers\LoginController', 'index']);
     $r->addRoute('POST', '/login', ['App\controllers\LoginController', 'login']);

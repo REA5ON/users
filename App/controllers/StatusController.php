@@ -27,7 +27,7 @@ class StatusController
         //check roles
         $this->user->isAuthorOrAdmin($vars);
 
-
+        //return array
         $user = $this->qb->getOne('user_data', $vars['id']);
         echo $this->engine->render('status', ['user' => $user]);
     }

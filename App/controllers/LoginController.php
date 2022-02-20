@@ -5,6 +5,7 @@ namespace App\controllers;
 // Start a Session
 if (!session_id()) @session_start();
 
+use App\Pagination;
 use App\Redirect;
 use App\User;
 use App\Validation;

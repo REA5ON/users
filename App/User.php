@@ -4,7 +4,6 @@ namespace App;
 
 use Delight\Auth\Auth;
 use Delight\Auth\AuthError;
-use Delight\Auth\Role;
 use PDO;
 use SimpleMail;
 
@@ -229,7 +228,7 @@ class User
             return true;
         } else {
             flash()->error('Not enough rights to action!');
-            Redirect::to('');
+            Redirect::to('page=1');
         }
     }
 
@@ -239,7 +238,7 @@ class User
         if ($sessionId !== $id)
         {
             flash()->error('You can modify just your profile!');
-            Redirect::to('');
+            Redirect::to('/page=1');
         }
     }
 
@@ -251,7 +250,7 @@ class User
         if (!$this->auth->hasRole(1) && ($this->auth->getUserId() !== $userId))
             {
                 flash()->error('Not enough rights to action!');
-                Redirect::to('');
+                Redirect::to('page=1');
             }
     }
 }

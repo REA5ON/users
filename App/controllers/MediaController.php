@@ -28,6 +28,7 @@ class MediaController
     public function index($vars){
         $this->user->isAuthorOrAdmin($vars['id']);
 
+        //return array
         $user = $this->qb->getOne('user_data', $vars['id']);
         echo $this->engine->render('media', ['user' => $user]);
     }

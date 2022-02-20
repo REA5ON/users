@@ -23,6 +23,7 @@ class ProfileController
 
     public function index($vars)
     {
+        //return array
         $user = $this->qb->getOne('user_data', $vars['id']);
         echo $this->engine->render('page_profile', ['user' => $user]);
     }
